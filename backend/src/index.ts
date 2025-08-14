@@ -1,18 +1,24 @@
 import Fastify from 'fastify';
+import playersRoutes from './routes/players.js';
+import tournamentRoutes from './routes/tournament.js';
+// import baseDeDonnees from './routes/bd.js';
 
 const fastify = Fastify({
 	logger: true
 })
 
 
-fastify.get('/', async (request : any, response : any) => {
-	//   reply.send({ Hello ! })
+fastify.register(playersRoutes, { prefix: '/players' })
+fastify.register(tournamentRoutes)
+
+
+fastify.get('/', async (request : any, reply : any) => {
+// 	const data = await getData()
+//   const processed = await processData(data)
+//   return processed
 	return {
 		message: 'Hello'
 	};
-	const t = () => {
-		return true
-	}
 })
 
 const start = async() => {

@@ -3,5 +3,7 @@ services:
     build: ./backend
     ports:
       - "3000:3000"
-    # volumes:
-    #   - ./backend:/backend
+    environment:
+      DATABASE_URL: "file:/backend/prisma/dev.db"
+    volumes:
+      - ./backend/prisma:/backend/prisma
