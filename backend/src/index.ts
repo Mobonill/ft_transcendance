@@ -1,24 +1,21 @@
 import Fastify from 'fastify';
+import prismaPlugin from './plugins/prisma.js';
 import playersRoutes from './routes/players.js';
 import tournamentRoutes from './routes/tournament.js';
-// import baseDeDonnees from './routes/bd.js';
 
 const fastify = Fastify({
 	logger: true
 })
 
-
+await fastify.register(prismaPlugin);
 fastify.register(playersRoutes, { prefix: '/players' })
 fastify.register(tournamentRoutes)
 
 
 fastify.get('/', async (request : any, reply : any) => {
-// 	const data = await getData()
-//   const processed = await processData(data)
-//   return processed
-	return {
-		message: 'Hello'
-	};
+ return fastify.prisma.user.findMany({
+    select: { id: true, username: true, avatarUrl: true }
+  });
 })
 
 const start = async() => {

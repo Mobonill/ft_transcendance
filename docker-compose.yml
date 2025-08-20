@@ -1,9 +1,14 @@
+
 services:
   backend:
-    build: ./backend
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: ft_transcendance
     ports:
       - "3000:3000"
-    environment:
-      DATABASE_URL: "file:/backend/prisma/dev.db"
     volumes:
+      - ./backend/src:/backend/src
       - ./backend/prisma:/backend/prisma
+    environment:
+      - DATABASE_URL=file:/backend/prisma/dev.db
