@@ -2,12 +2,15 @@ import Fastify from 'fastify';
 import prismaPlugin from './plugins/prisma.js';
 import playersRoutes from './routes/players.js';
 import tournamentRoutes from './routes/tournament.js';
+import usersRoutes from './routes/users.js';
+
 
 const fastify = Fastify({
 	logger: true
 })
 
 await fastify.register(prismaPlugin);
+await fastify.register(usersRoutes, { prefix: '/users' });
 fastify.register(playersRoutes, { prefix: '/players' })
 fastify.register(tournamentRoutes)
 
@@ -25,6 +28,7 @@ try {
 } catch (error) {
 		fastify.log.error(error);
 		process.exit(1);
+		fastify.printRoutes()
 	}
 }
 
