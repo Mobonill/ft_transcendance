@@ -2,8 +2,9 @@ FROM node:bullseye
 
 WORKDIR /backend
 
-COPY package.json package-lock.json ./
+COPY package.json ./
 RUN npm install
+
 
 COPY . .
 

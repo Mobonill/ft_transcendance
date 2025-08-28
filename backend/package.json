@@ -1,32 +1,31 @@
 {
   "name": "transcendance_project",
   "version": "1.0.0",
-  "description": "",
-  "main": "index.ts",
   "type": "module",
+  "main": "dist/index.js",
   "scripts": {
     "build": "tsc",
     "start": "node dist/index.js",
-    "prisma:generate": "prisma generate",
-    "prisma:migrate": "prisma migrate dev"
+    "dev": "ts-node src/index.ts"
   },
-  "author": "",
-  "license": "ISC",
-  "dependencies": {
-    "@fastify/cors": "^11.1.0",
-    "@prisma/client": "^6.14.0",
-    "fastify": "^5.4.0",
-    "@fastify/oauth2": "^7.7.0",
-    "@fastify/cookie": "^8.3.0",
-    "@fastify/jwt": "^8.0.1",
-    "dotenv": "^16.3.1",
-    "fastify-plugin": "^4.5.1",
-    "ts-node": "^10.9.1",
-    "typescript": "^5.3.3"
-  },
-  "devDependencies": {
-    "@types/node": "^20.14.9",
-    "prisma": "^6.14.0",
-    "typescript": "^5.8.3"
-  }
+    "dependencies": {
+      "fastify": "^4.28.1",
+      "@fastify/cookie": "^8.3.0",
+      "@fastify/oauth2": "^7.7.0",
+      "@fastify/jwt": "^7.2.1",
+      "@fastify/cors": "^8.5.0",
+      "@prisma/client": "^6.14.0",
+      "dotenv": "^16.3.1"
+    },
+    "devDependencies": {
+      "typescript": "^5.3.3",
+      "ts-node": "^10.9.1",
+      "prisma": "^6.14.0",
+      "@types/node": "^20.14.9"
+    },
+    "overrides": {
+      "@fastify/oauth2": {
+      "@fastify/cookie": "^8.3.0"
+      }
+    }
 }

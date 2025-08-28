@@ -1,74 +1,68 @@
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   index.ts                                           :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: morgane <morgane@student.42.fr>            +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/08/23 11:46:51 by morgane           #+#    #+#             */
-/*   Updated: 2025/08/23 11:49:41 by morgane          ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
+import "dotenv/config";
+import Fastify from "fastify";
+import fastifyCookie from "@fastify/cookie";
 
-import Fastify from 'fastify';
-import fastifyCookie from '@fastify/cookie';
-import oauthPlugin from '@fastify/oauth2';
-import fastifyJwt from '@fastify/jwt';
-import prismaPlugin from './plugins/prisma.js';
-import playersRoutes from './routes/players.js';
-import tournamentRoutes from './routes/tournament.js';
-import usersRoutes from './routes/users.js';
+import prismaPlugin from "./plugins/prisma.js";
+import playersRoutes from "./routes/players.js";
+import tournamentRoutes from "./routes/tournament.js";
+import usersRoutes from "./routes/users.js";
+import oauth42 from "./plugins/oauth.js";
 
-
-const fastify = Fastify({
-	logger: true
-})
-
-function getEnv(key: string): string {
-  const value = process.env[key];
-  if (!value) {
-    throw new Error(`Missing env var: ${key}`);
+declare module "fastify" {
+  interface FastifyInstance {
+    fortytwoOAuth: {
+      getAccessTokenFromAuthorizationCodeFlow: (req: any) => Promise<{ access_token: string }>;
+    };
   }
-  return value;
 }
 
-fastify.register(fastifyCookie);
-fastify.register(fastifyJwt, { secret: "secret123" });
-fastify.register(oauthPlugin, {
-	name: "fortytwoOAuth2",
-	scope: ["public"],
-	credentials: {
-		client: {
-			id: getEnv("CLIENT_ID"),
-			secret: getEnv("CLIENT_SECRET"),
-		},
-		auth: oauthPlugin.FortyTwo,
-	},
-	startRedirectPath: "/auth/42/login",
-	callbackUri: getEnv("REDIRECT_URI"),
+
+const fastify = Fastify({ logger: true });
+
+fastify.register(fastifyCookie, { secret: "secret123" });
+await fastify.register(prismaPlugin);
+await fastify.register(oauth42);
+fastify.after(() => {
+  console.log("OAuth plugin loaded:", typeof fastify.fortytwoOAuth);
+});
+await fastify.register(usersRoutes, { prefix: "/users" });
+fastify.register(playersRoutes, { prefix: "/players" });
+fastify.register(tournamentRoutes);
+
+
+fastify.get("/", async () => {
+  return { message: "Clique sur /auth/42/login pour te connecter avec 42" };
 });
 
-await fastify.register(prismaPlugin);
-await fastify.register(usersRoutes, { prefix: '/users' });
-fastify.register(playersRoutes, { prefix: '/players' })
-fastify.register(tournamentRoutes)
+fastify.get("/auth/callback", async (req, reply) => {
+	  console.log("👉 Callback hit, fastify.fortytwoOAuth=", !!fastify.fortytwoOAuth);
+  try {
+	const token = await fastify.fortytwoOAuth.getAccessTokenFromAuthorizationCodeFlow(req);
+    console.log("✅ Got token:", token);
+	reply
+      .setCookie("token42", token.access_token, {
+        httpOnly: true,
+        sameSite: "lax",
+        path: "/",
+        secure: false,
+      })
+      .redirect("/me");
+  } catch (err) {
+    fastify.log.error(err);
+    reply.code(500).send({ error: "auth_failed" });
+  }
+});
 
+fastify.get("/me", async (req, reply) => {
+  const token42 = (req as any).cookies?.token42;
+  if (!token42) return reply.code(401).send({ error: "not_authenticated" });
 
-fastify.get('/', async (request : any, reply : any) => {
- return fastify.prisma.user.findMany({
-    select: { id: true, username: true, avatarUrl: true }
+  const res = await fetch("https://api.intra.42.fr/v2/me", {
+    headers: { Authorization: `Bearer ${token42}` },
   });
-})
 
-const start = async() => {
-try { 
-	await fastify.listen({ port: 3000, host: '0.0.0.0' });
+  if (!res.ok) return reply.code(res.status).send({ error: "profile_fetch_failed" });
+  return res.json();
+});
 
-} catch (error) {
-		fastify.log.error(error);
-		process.exit(1);
-		fastify.printRoutes()
-	}
-}
-
-start()
+await fastify.listen({ port: 3000, host: "0.0.0.0" });
