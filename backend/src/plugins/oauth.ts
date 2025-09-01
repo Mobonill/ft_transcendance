@@ -1,16 +1,37 @@
-import type { FastifyPluginAsync } from "fastify";
-import oauthPlugin, { FastifyOAuth2Options } from "@fastify/oauth2";
+import type { FastifyPluginAsync, FastifyInstance, FastifyRequest } from "fastify";
+import oauthPlugin, { FastifyOAuth2Options, FastifyCheckStateFunction } from "@fastify/oauth2";
 import crypto from "crypto";
 
+// Récupération d'une variable d'environnement
 function getEnv(key: string): string {
   const v = process.env[key];
   if (!v) throw new Error(`Missing env var: ${key}`);
   return v;
 }
 
+// Génération du state aléatoire
+function generateState(this: FastifyInstance): string {
+  return crypto.randomBytes(16).toString("hex");
+}
+
+// Vérification du state (avec cast pour bypass TS)
+function checkState(
+  this: FastifyInstance,
+  req: FastifyRequest,
+  providedState: string,
+  callback: (err: Error | null, result?: boolean) => void
+): void {
+  try {
+    const stored = (req as any).cookies?.["oauth2-fortytwoOAuth-state"];
+    callback(null, stored === providedState);
+  } catch (err) {
+    callback(err as Error);
+  }
+}
+
 const oauth42: FastifyPluginAsync = async (fastify) => {
   const opts: FastifyOAuth2Options = {
-    name: "fortytwoOAuth",   // DOIT correspondre au nom que tu utilises ensuite
+    name: "fortytwoOAuth",
     scope: ["public"],
     credentials: {
       client: { id: getEnv("CLIENT_ID"), secret: getEnv("CLIENT_SECRET") },
@@ -23,22 +44,22 @@ const oauth42: FastifyPluginAsync = async (fastify) => {
     },
     startRedirectPath: "/auth/42/login",
     callbackUri: getEnv("REDIRECT_URI"),
-    generateStateFunction: () => crypto.randomBytes(16).toString("hex"),
-    checkStateFunction: (req, providedState, callback) => {
-      const stored = (req.cookies as any)?.["oauth2-fortytwoOAuth-state"];
-      callback(null, stored === providedState);
-    },
+
+    // Config cookie (ne pas mettre cookieName ici !)
     cookie: {
       signed: true,
-      secure: false,
+      secure: false,  // ⚠️ mettre true en prod avec HTTPS
       httpOnly: true,
       sameSite: "lax",
       path: "/",
     },
+
+    // On caste pour forcer TS à accepter
+    generateStateFunction: generateState as any,
+    checkStateFunction: checkState as unknown as FastifyCheckStateFunction,
   };
 
-  // IMPORTANT: ici on doit "await"
-  await fastify.register(oauthPlugin, opts);
+  fastify.register(oauthPlugin, opts);
 };
 
 export default oauth42;

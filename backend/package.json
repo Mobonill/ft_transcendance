@@ -8,24 +8,24 @@
     "start": "node dist/index.js",
     "dev": "ts-node src/index.ts"
   },
-    "dependencies": {
-      "fastify": "^4.28.1",
-      "@fastify/cookie": "^8.3.0",
-      "@fastify/oauth2": "^7.7.0",
-      "@fastify/jwt": "^7.2.1",
-      "@fastify/cors": "^8.5.0",
-      "@prisma/client": "^6.14.0",
-      "dotenv": "^16.3.1"
-    },
-    "devDependencies": {
-      "typescript": "^5.3.3",
-      "ts-node": "^10.9.1",
-      "prisma": "^6.14.0",
-      "@types/node": "^20.14.9"
-    },
-    "overrides": {
-      "@fastify/oauth2": {
-      "@fastify/cookie": "^8.3.0"
-      }
+  "dependencies": {
+    "@fastify/cookie": "^8.3.0",
+    "@fastify/cors": "^8.0.0",
+    "@fastify/jwt": "^9.0.0",
+    "@fastify/oauth2": "^7.9.0",
+    "@prisma/client": "^6.0.0",
+    "dotenv": "^16.0.0",
+    "fastify": "^4.29.1"
+},
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "prisma": "^6.0.0",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.0.0"
+  },
+  "overrides": {
+    "@fastify/oauth2": {
+      "@fastify/cookie": "^9.4.0"
     }
+  }
 }

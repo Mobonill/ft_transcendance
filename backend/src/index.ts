@@ -1,13 +1,13 @@
-import "dotenv/config";
+"dotenv/config";
 import Fastify from "fastify";
-import fastifyCookie from "@fastify/cookie";
-
 import prismaPlugin from "./plugins/prisma.js";
+import oauth42 from "./plugins/oauth.js";
+import fastifyCookie from "@fastify/cookie";
 import playersRoutes from "./routes/players.js";
 import tournamentRoutes from "./routes/tournament.js";
 import usersRoutes from "./routes/users.js";
-import oauth42 from "./plugins/oauth.js";
 
+// Étend Fastify pour reconnaître fortytwoOAuth
 declare module "fastify" {
   interface FastifyInstance {
     fortytwoOAuth: {
@@ -16,35 +16,40 @@ declare module "fastify" {
   }
 }
 
-
 const fastify = Fastify({ logger: true });
 
+// 1) Cookies (pour le state signé)
 fastify.register(fastifyCookie, { secret: "secret123" });
+
+// 2) Plugins
 await fastify.register(prismaPlugin);
 await fastify.register(oauth42);
 fastify.after(() => {
-  console.log("OAuth plugin loaded:", typeof fastify.fortytwoOAuth);
+  console.log("✅ OAuth plugin chargé:", oauth42);
 });
+
+// 3) Routes métier
 await fastify.register(usersRoutes, { prefix: "/users" });
 fastify.register(playersRoutes, { prefix: "/players" });
 fastify.register(tournamentRoutes);
 
-
+// --- Routes OAuth ---
 fastify.get("/", async () => {
   return { message: "Clique sur /auth/42/login pour te connecter avec 42" };
 });
 
 fastify.get("/auth/callback", async (req, reply) => {
-	  console.log("👉 Callback hit, fastify.fortytwoOAuth=", !!fastify.fortytwoOAuth);
+  console.log("👉 Callback hit, oauth42=", !!oauth42);
   try {
-	const token = await fastify.fortytwoOAuth.getAccessTokenFromAuthorizationCodeFlow(req);
+    const token = await fastify.getAccessTokenFromAuthorizationCodeFlow(req);
     console.log("✅ Got token:", token);
-	reply
+
+    reply
       .setCookie("token42", token.access_token, {
         httpOnly: true,
         sameSite: "lax",
         path: "/",
-        secure: false,
+        secure: false, // true en prod
       })
       .redirect("/me");
   } catch (err) {
@@ -65,4 +70,5 @@ fastify.get("/me", async (req, reply) => {
   return res.json();
 });
 
+// --- Lancement ---
 await fastify.listen({ port: 3000, host: "0.0.0.0" });
