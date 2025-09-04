@@ -1,11 +1,11 @@
-import "dotenv/config";
+"dotenv/config";
 import Fastify from "fastify";
-import fastifyCookie from "@fastify/cookie";
 import prismaPlugin from "./plugins/prisma.js";
+import oauth42 from "./plugins/oauth.js";
+import fastifyCookie from "@fastify/cookie";
 import playersRoutes from "./routes/players.js";
 import tournamentRoutes from "./routes/tournament.js";
 import usersRoutes from "./routes/users.js";
-import oauth42 from "./plugins/oauth.js";
 const fastify = Fastify({ logger: true });
 // 1) Cookies (pour le state signé)
 fastify.register(fastifyCookie, { secret: "secret123" });
@@ -13,7 +13,7 @@ fastify.register(fastifyCookie, { secret: "secret123" });
 await fastify.register(prismaPlugin);
 await fastify.register(oauth42);
 fastify.after(() => {
-    console.log("✅ OAuth plugin chargé:", typeof fastify.fortytwoOAuth);
+    console.log("✅ OAuth plugin chargé:", fastify.fortytwoOAuth);
 });
 // 3) Routes métier
 await fastify.register(usersRoutes, { prefix: "/users" });

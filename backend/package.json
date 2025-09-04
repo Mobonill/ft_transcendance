@@ -2,30 +2,25 @@
   "name": "transcendance_project",
   "version": "1.0.0",
   "type": "module",
-  "main": "dist/index.js",
   "scripts": {
+    "dev": "nodemon",
     "build": "tsc",
-    "start": "node dist/index.js",
-    "dev": "ts-node src/index.ts"
+    "start": "node dist/index.js"
   },
   "dependencies": {
     "@fastify/cookie": "^8.3.0",
     "@fastify/cors": "^8.0.0",
-    "@fastify/jwt": "^9.0.0",
+    "@fastify/jwt": "^8.0.0",
     "@fastify/oauth2": "^7.9.0",
     "@prisma/client": "^6.0.0",
     "dotenv": "^16.0.0",
     "fastify": "^4.29.1"
-},
+  },
   "devDependencies": {
     "@types/node": "^20.0.0",
+    "nodemon": "^3.1.10",
     "prisma": "^6.0.0",
-    "ts-node": "^10.9.2",
-    "typescript": "^5.0.0"
-  },
-  "overrides": {
-    "@fastify/oauth2": {
-      "@fastify/cookie": "^9.4.0"
-    }
+    "ts-node": "^10.9.1",
+    "typescript": "^5.1.6"
   }
 }

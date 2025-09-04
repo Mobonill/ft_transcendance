@@ -59,7 +59,7 @@ const oauth42: FastifyPluginAsync = async (fastify) => {
     checkStateFunction: checkState as unknown as FastifyCheckStateFunction,
   };
 
-  fastify.register(oauthPlugin, opts);
+await fastify.register(oauthPlugin, opts);
 };
 
 export default oauth42;
