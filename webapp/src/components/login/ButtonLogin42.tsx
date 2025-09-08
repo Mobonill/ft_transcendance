@@ -1,31 +1,14 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   App.tsx                                            :+:      :+:    :+:   */
+/*   ButtonLogin42.tsx                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mobonill <mobonill@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/09/08 16:28:16 by mobonill          #+#    #+#             */
-/*   Updated: 2025/09/08 16:28:19 by mobonill         ###   ########.fr       */
+/*   Created: 2025/09/08 16:28:09 by mobonill          #+#    #+#             */
+/*   Updated: 2025/09/08 16:28:12 by mobonill         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-import './App.css'
-
-function App() {
-  const momo = "MOMO"
-
-
-  return (
-	<>
-      <h1><button> href={'https://api.intra.42.fr/oauth/authorize?client_id=u-s4t2ud-c45fec7ff3c070b86aabb0ec3654e9718f0bb6ed6e39ca7c9c797a2bb131cc8d&redirect_uri=http%3A%2F%2Flocalhost%3A3000%2Fauth%2Fcallback&response_type=code'}
-	  42 login</button></h1>
-	  <br> </br>
-	  
-	</>
-  )
-}
-
-export default App
 
 
