@@ -1,22 +1,26 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   main.tsx                                           :+:      :+:    :+:   */
+/*   Login.jsx                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mobonill <mobonill@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/09/08 16:28:22 by mobonill          #+#    #+#             */
-/*   Updated: 2025/09/08 16:28:26 by mobonill         ###   ########.fr       */
+/*   Created: 2025/09/08 16:38:43 by mobonill          #+#    #+#             */
+/*   Updated: 2025/09/08 16:52:10 by mobonill         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-import { StrictMode } from 'react'
-import { createRoot } from 'react-dom/client'
-import './index.css'
-import App from './App.tsx'
+import Button42 from '../login/utils/Button42'
 
-createRoot(document.getElementById('root')!).render(
-  <StrictMode>
-    <App />
-  </StrictMode>,
-)
+export default function Login() {
+
+	return (
+		<div className="header">
+			<Button42/>
+		</div>
+
+	)
+
+
+
+}

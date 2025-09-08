@@ -1,0 +1,2 @@
+<br> = saut de ligne
+<p> = paragraphe
