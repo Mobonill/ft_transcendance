@@ -1,19 +1,32 @@
 services:
-  backend:
+
+  server:
+    container_name: server
     build:
-      context: ./backend
-      dockerfile: Dockerfile
-    container_name: ft_transcendance
+      context: ./server
     ports:
       - "3000:3000"
     volumes:
-      - ./backend/src:/backend/src
-      - ./backend/prisma:/backend/prisma
+      - ./server:/server
+      - /server/node_modules
+      - ./server/prisma:/server/prisma
     env_file:
-      - ./backend/.env
+      - ./server/.env
     environment:
-      DATABASE_URL: "file:/backend/prisma/dev.db"
+      DATABASE_URL: "file:/server/prisma/dev.db"
       CLIENT_ID: ${CLIENT_ID}
       CLIENT_SECRET: ${CLIENT_SECRET}
       REDIRECT_URI: ${REDIRECT_URI}
       CHOKIDAR_USEPOLLING: true
+
+  webapp:
+    container_name: webapp
+    build:
+      context: ./webapp
+    ports:
+      - "5173:5173"
+    volumes:
+      - ./webapp:/webapp
+      - /webapp/node_modules
+    environment:
+      VITE_BACKEND_ULR: http://localhost:3000

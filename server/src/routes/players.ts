@@ -34,9 +34,10 @@ async function playersRoutes(fastify: FastifyInstance, options : any) {
     const { id } = request.params as any
     const updatedPlayer = request.body as any
     const index = players.findIndex(p => p.id === parseInt(id))
-    if (index === -1) return reply.code(404).send({ error: 'Not found' })
-
-    players[index] = { ...players[index], ...updatedPlayer }
+    if (index === -1)
+		return reply.code(404).send({ error: 'Not found' })
+    // if (updatedPlayer)
+	// 	players[index].alias = {players[index], updatedPlayer}
     return players[index]
   })
 
