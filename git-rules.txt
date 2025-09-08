@@ -1,0 +1,29 @@
+Rules :
+
+Noms de branches : 
+
+- main
+- develop --> branche de travail
+  - authentication
+  - tournament
+  - players
+
+Commit :
+
+J'ai fait ci j'ai fait ca --> INTERDICTION
+
+
+---------------------------------------------
+
+feat(<NOM FEATURE>): <commentaire>
+refactor(<NOM REFACTOR>): <commentaire>
+fix(<NOM FEATURE>): <commentaire>
+chore(<NOM FEATURE>): <commentaire>
+
+
+
+Exemple:
+
+J'ai travaille sur l'authentification :
+
+feat(auth): logins inputs added
