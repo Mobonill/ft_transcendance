@@ -5,7 +5,7 @@
     "moduleResolution": "NodeNext",
     "outDir": "dist",
     "esModuleInterop": true,
-    "strict": true,
+    "strict": false,
     "skipLibCheck": true,
     "noUnusedParameters": true,
     "noImplicitReturns": true,
@@ -15,5 +15,7 @@
   "ts-node": {
     "esm": true
   },
+  "include": ["src"],
   "exclude": ["node_modules", "./*.ts", "dist"]
 }
+

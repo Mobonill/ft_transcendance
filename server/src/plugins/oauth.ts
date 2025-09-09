@@ -1,6 +1,5 @@
 import type { FastifyPluginAsync, FastifyInstance, FastifyRequest } from "fastify";
 import oauthPlugin, { FastifyOAuth2Options, FastifyCheckStateFunction } from "@fastify/oauth2";
-import crypto from "crypto";
 
 // Récupération d'une variable d'environnement
 function getEnv(key: string): string {
@@ -9,10 +8,6 @@ function getEnv(key: string): string {
   return v;
 }
 
-// Génération du state aléatoire
-function generateState(this: FastifyInstance): string {
-  return crypto.randomBytes(16).toString("hex");
-}
 
 // Vérification du state (avec cast pour bypass TS)
 function checkState(

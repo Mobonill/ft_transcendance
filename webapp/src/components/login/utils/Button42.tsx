@@ -1,26 +1,25 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   Login.jsx                                          :+:      :+:    :+:   */
+/*   Button42.jsx                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mobonill <mobonill@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/09/08 16:38:43 by mobonill          #+#    #+#             */
-/*   Updated: 2025/09/08 16:52:10 by mobonill         ###   ########.fr       */
+/*   Created: 2025/09/08 16:28:09 by mobonill          #+#    #+#             */
+/*   Updated: 2025/09/09 09:17:41 by mobonill         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-import Button42 from '../login/utils/Button42'
+import '../../../style/login/button42.css'
 
-export default function Login() {
+export default function Button42() {
+	const handleClick = () => {
+		console.log("Je suis le boutton de 42")
+	}
 
 	return (
-		<div className="header">
-			<Button42/>
-		</div>
-
+		<button className="button42" onClick={handleClick}>
+			Login with 42!
+		</button>
 	)
-
-
-
 }
