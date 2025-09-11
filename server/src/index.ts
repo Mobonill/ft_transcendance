@@ -37,9 +37,10 @@ fastify.get("/", async () => {
 fastify.get("/auth/42/login", async (reply:any) => {
 	const state = generateState();
 	console.log(state);
-	reply.setCookie("oauth_cookie", state);
-	const url = `https://api.intra.42.fr/oauth/authorize?client_id=u-s4t2ud-c45fec7ff3c070b86aabb0ec3654e9718f0bb6ed6e39ca7c9c797a2bb131cc8d&redirect_uri=http%3A%2F%2Flocalhost%3A3000%2Fauth%2Fcallback&response_type=code&state=${state}`;
-	reply.redirect(url);
+	void reply;
+	// reply.setCookie("oauth_cookie", state);
+	// const url = `https://api.intra.42.fr/oauth/authorize?client_id=u-s4t2ud-c45fec7ff3c070b86aabb0ec3654e9718f0bb6ed6e39ca7c9c797a2bb131cc8d&redirect_uri=http%3A%2F%2Flocalhost%3A3000%2Fauth%2Fcallback&response_type=code&state=${state}`;
+	// reply.redirect(url);
 });
 
 fastify.get("/auth/callback", async (request:any, reply:any) => {

@@ -8,7 +8,6 @@ services:
       - "3000:3000"
     volumes:
       - ./server:/server
-      - /server/node_modules
       - ./server/prisma:/server/prisma
     env_file:
       - ./server/.env
