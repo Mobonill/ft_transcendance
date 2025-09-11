@@ -26,6 +26,5 @@ services:
       - "5173:5173"
     volumes:
       - ./webapp:/webapp
-      - /webapp/node_modules
     environment:
       VITE_BACKEND_ULR: http://localhost:3000
