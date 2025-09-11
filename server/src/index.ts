@@ -3,6 +3,7 @@ import Fastify from "fastify";
 import crypto from "crypto";
 // import fastifyCookie from "fastify-cookie";
 import fastifyCookie from "@fastify/cookie";
+// import oauth42 from "./plugins/oauth.js";
 // import fastifyCookie from "@fastify/cookie";
 // import prismaPlugin from "./plugins/prisma.js";
 // import oauth42 from "./plugins/oauth.js";
@@ -34,24 +35,41 @@ fastify.get("/", async () => {
 });
 
 
-fastify.get("/auth/42/login", async (reply:any) => {
+fastify.get("/auth/42/login", async (_request: any, reply: any) => {
 	const state = generateState();
-	console.log(state);
-	void reply;
-	// reply.setCookie("oauth_cookie", state);
-	// const url = `https://api.intra.42.fr/oauth/authorize?client_id=u-s4t2ud-c45fec7ff3c070b86aabb0ec3654e9718f0bb6ed6e39ca7c9c797a2bb131cc8d&redirect_uri=http%3A%2F%2Flocalhost%3A3000%2Fauth%2Fcallback&response_type=code&state=${state}`;
-	// reply.redirect(url);
+	console.log("LOGIN - Generated state:", state);
+	reply.setCookie("oauth_cookie", state, {
+		path: "/",
+		httpOnly: true,
+		sameSite: "lax",
+		secure: false,
+	});
+	const url = `https://api.intra.42.fr/oauth/authorize` + `?client_id=${process.env.CLIENT_ID}` +
+		`&redirect_uri=${encodeURIComponent("http://localhost:3000/auth/callback")}` +
+		`&response_type=code` + `&state=${state}`;
+
+	return reply.redirect(url);
 });
 
+
 fastify.get("/auth/callback", async (request:any, reply:any) => {
-	const code = (request.query as any).code;
-	const state = (request.query as any).state;
-	if (!code || !state)
+	const code = request.query.code;
+	const state42 = request.query.state;
+	const cookieState = request.cookies.oauth_cookie;
+
+	if (!code || !state42)
 		return reply.send({Error: "No code sent"});
-	if (request.cookies.oauth_state !== state)
+	if (cookieState !== state42)
 		return reply.code(400).send({Error: "Wrong state received"});
 	return reply.send({code}); 
 });
+
+
+
+// const res = await fetch(`https://api.intra.42.fr/oauth/token`, {
+// 	method: "POST",
+// 	client_id: process.env.CLIENT_ID,
+// })
 
 
 
